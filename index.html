@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Just Time Pass</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+  :root {
+    --background-light: #ffffff;
+    --text-gray: #6b7280;
+    --card-bg: #f9fafb;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --accent-color: #111827;
+    --button-bg: #111827;
+    --button-text: #ffffff;
+    --button-hover-bg: #374151;
+    --transition-duration: 0.3s;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-gray);
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex-grow: 1;
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+  }
+
+  p.subtitle {
+    font-size: 1.25rem;
+    margin-top: 0;
+    margin-bottom: 3rem;
+    color: var(--text-gray);
+    font-weight: 500;
+  }
+
+  .card {
+    background: var(--card-bg);
+    box-shadow: 0 8px 16px var(--card-shadow);
+    border-radius: 0.75rem;
+    padding: 2.5rem 3rem;
+    max-width: 400px;
+    margin: 0 auto;
+    user-select: none;
+    transition: box-shadow var(--transition-duration);
+  }
+
+  .card:hover {
+    box-shadow: 0 12px 24px var(--card-shadow);
+  }
+
+  .clock {
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+  }
+
+  .date {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-gray);
+    margin-bottom: 2rem;
+  }
+
+  button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 2rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-duration), transform var(--transition-duration);
+  }
+
+  button:hover,
+  button:focus {
+    background-color: var(--button-hover-bg);
+    outline: none;
+    transform: scale(1.05);
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    font-size: 0.875rem;
+    color: var(--text-gray);
+  }
+</style>
+</head>
+<body>
+<main role="main" aria-label="Just Time Pass interaction area">
+  <h1>Just Time Pass</h1>
+  <p class="subtitle">A simple fun interactive clock to brighten your day</p>
+  <section class="card" aria-live="polite" aria-atomic="true">
+    <div class="clock" id="clock" aria-label="Current time">--:--:--</div>
+    <div class="date" id="date" aria-label="Current date">Loading date...</div>
+    <button id="colorBtn" aria-label="Change background color">Change Background</button>
+  </section>
+</main>
+<footer>
+  &copy; 2024 Just Time Pass • Made for fun
+</footer>
+
+<script>
+  // Setup live clock
+  function updateClock() {
+    const now = new Date();
+    // Format time HH:MM:SS AM/PM
+    let hours = now.getHours();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12; 
+    const minutes = now.getMinutes().toString().padStart(2,'0');
+    const seconds = now.getSeconds().toString().padStart(2,'0');
+    const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+    document.getElementById('clock').textContent = timeString;
+
+    // Format date (e.g. Tuesday, April 23, 2024)
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateString = now.toLocaleDateString(undefined, options);
+    document.getElementById('date').textContent = dateString;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Change background color on button click with smooth transition
+  const colorBtn = document.getElementById('colorBtn');
+  const root = document.documentElement;
+
+  function randomHslColor() {
+    const hue = Math.floor(Math.random() * 360);
+    const saturation = 70 + Math.random() * 20; // 70-90%
+    const lightness = 75 + Math.random() * 10;  // 75-85%
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  }
+
+  colorBtn.addEventListener('click', () => {
+    // Animate background color change on body
+    const newBg = randomHslColor();
+
+    // Set CSS transition and change background
+    document.body.style.transition = 'background-color 0.8s ease';
+    document.body.style.backgroundColor = newBg;
+
+    // Also update text color for contrast dynamically (light bg, so keep text dark)
+    // No change needed for text color here for simplicity
+  });
+</script>
+</body>
+</html>
+
